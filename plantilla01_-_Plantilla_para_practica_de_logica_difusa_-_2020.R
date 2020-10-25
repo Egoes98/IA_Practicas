@@ -87,10 +87,7 @@ resultados$altoypesado = apply(data.frame(resultados$altofuzzy, resultados$pesad
 # Dibuje
 # Haga un dibujo que muestre la altura del jugador en el eje X, su peso en el eje Y, y utilize para dar color el valor de la columna altoypesado, generada
 # --> Utilize la librería ggplop2
-ggplot(resultados,aes(x=altofuzzy,y=pesadofuzzy),col=altoypesado)+geom_point()
-ggplot(resultados,aes(x=height_cm,y=weight_kg),color=altoypesado)+geom_point()
-
-
+ggplot(resultados,aes(x=height_cm,y=weight_kg,color=altoypesado))+geom_point()
 
 #---------------------------------------------------------------------------
 ######################## Parte 3 ###########################################
@@ -111,6 +108,19 @@ ggplot(resultados,aes(x=height_cm,y=weight_kg),color=altoypesado)+geom_point()
 #  - Minutos jugados/partido
 #  (...)
 
+#True Shooting Percentage
+tsp = function(PTS,FGA,FTA){
+  return ((PTS/(2*(FGA+(0.44*FTA))))*100)
+}
+
+datos$TSP = apply(data.frame(datos$PTS, datos$FGA, datos$FTA), 1,function(x) tsp(x[1],x[2],x[3]))
+
+#Minutes per game
+mpg = function(MIN,GP){
+  return (MIN/GP)
+}
+
+datos$MPG = apply(data.frame(datos$MIN, datos$GP), 1, function(x) mpg(x[1],x[2]))
 
 # Paso 1, definir todos los conjuntos difusos a usar como vectores de 5 elementos
 # --> etiqueta1 = c(valor,xxx, xxx, xxx, xxx)
@@ -120,13 +130,26 @@ ggplot(resultados,aes(x=height_cm,y=weight_kg),color=altoypesado)+geom_point()
 # *para etiquetas "derechas", c(3,a,b,c,NA)
 # *a,b,c,d representan los puntos de una etiqueta trapezoidal
 
+#Conjuntos difusos TSP
+TSPBajo = c(2,0,47,50,NA)
+TSPMedio = c(4,50,53,57,59)
+TSPALTO = c(3,59,64,80,NA)
+
+#variable 2
+variable2Izq = c(2,0,0,0,NA)
+variable2Cent = c(4,0,0,0,0)
+variable2Der = c(3,0,0,0,NA)
+
 
 # Paso 2, pegar todas las etiquetas por columnas y asignar a una variable
 # --> varinp.mf = cbind(etiqueta1,etiqueta2,etiqueta3...)
 
 
+varinp.mf = cbind(variable1Izq,variable1Cent,variable1Der)
+
 # Paso 3, definir una matriz con el número de etiquetas de cada entrada
 # --> num.fvalinput = matrix(c(numeroetiquetasentrada1,numeroetiquetasentrada2), nrow=1)
+num.fvalinput = matrix(c(3,3), nrow=1)
 
 
 # Paso 4, dele nombre a cada etiqueta en un vector
