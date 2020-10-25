@@ -40,7 +40,7 @@ resultados$altocrisp = ifelse(resultados$height_cm>190,1,0)
 # Defina, como un vector de 4 elementos un conjunto difuso llamado alto 
 # (como considere debería ser)
 # --> alto = c(..., ..., ..., ...)
-alto = c(175,180,190,200)
+alto = c(190,210,230,2300)
 
 # Cree una función llamada trapMF que reciba un número y un conjunto difuso y 
 # devuelva el valor de pertenencia del número al conjunto definido
@@ -52,13 +52,9 @@ trapMF= function(valor, conjunto){
                 ifelse(between(valor,conjunto[3], conjunto[4]),((conjunto[4]-valor)/(conjunto[4]-conjunto[3])),0)))
 }
 
-trapMf(200,alto)
-
 # Añada una columna llamada altofuzzy, resultado de aplicar la función trapMF sobre los elementos de la columna height y el conjunto alto
 # --> nombredeldataframe$altofuzzy = apply(data.frame(nombredeldataframe$height), 1, FUN=function(x) trapMF(x,alto))
 resultados$altofuzzy = apply(data.frame(resultados$height_cm), 1, FUN=function(x) trapMF(x,alto))
-
-median()
 
 
 # Dibuje
@@ -69,14 +65,13 @@ median()
 ggplot(resultados,aes(x=height_cm,y=altocrisp))+geom_point()
 ggplot(resultados,aes(x=height_cm,y=altofuzzy))+geom_point()
 
-
 #---------------------------------------------------------------------------
 ######################## Parte 2 ###########################################
 #--------------------------------------------------------------------------.
 # De la misma manera que en la primera parte, cree un conjunto llamado "pesado", 
 # para el peso de un jugador
 # --> pesado = c(..., ..., ..., ...)
-pesado = c(85,100,120,200)
+pesado = c(95,120,180,180)
 
 
 # Añada una columna llamada pesadofuzzy, resultado de aplicar la función trapMF sobre los elementos de la columna points_per_minute y el conjunto bueno
@@ -93,6 +88,7 @@ resultados$altoypesado = apply(data.frame(resultados$altofuzzy, resultados$pesad
 # Haga un dibujo que muestre la altura del jugador en el eje X, su peso en el eje Y, y utilize para dar color el valor de la columna altoypesado, generada
 # --> Utilize la librería ggplop2
 ggplot(resultados,aes(x=altofuzzy,y=pesadofuzzy),col=altoypesado)+geom_point()
+ggplot(resultados,aes(x=height_cm,y=weight_kg),color=altoypesado)+geom_point()
 
 
 
