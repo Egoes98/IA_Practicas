@@ -135,17 +135,14 @@ TSPBajo = c(2,0,47,50,NA)
 TSPMedio = c(4,50,53,57,59)
 TSPALTO = c(3,59,64,80,NA)
 
-#variable 2
-variable2Izq = c(2,0,0,0,NA)
-variable2Cent = c(4,0,0,0,0)
-variable2Der = c(3,0,0,0,NA)
-
+#Conjuntos difusos MPG
+MPGBajo = c(2,0,17,20,NA)
+MPGMedio = c(4,20,23,25,27)
+MPGAlto = c(3,27,30,40,NA)
 
 # Paso 2, pegar todas las etiquetas por columnas y asignar a una variable
 # --> varinp.mf = cbind(etiqueta1,etiqueta2,etiqueta3...)
-
-
-varinp.mf = cbind(variable1Izq,variable1Cent,variable1Der)
+varinp.mf = cbind(TSPBajo,TSPMedio,TSPALTO,MPGBajo,MPGMedio,MPGAlto)
 
 # Paso 3, definir una matriz con el número de etiquetas de cada entrada
 # --> num.fvalinput = matrix(c(numeroetiquetasentrada1,numeroetiquetasentrada2), nrow=1)
@@ -154,10 +151,16 @@ num.fvalinput = matrix(c(3,3), nrow=1)
 
 # Paso 4, dele nombre a cada etiqueta en un vector
 # --> names.varinput = c("nombre1", "nombre2", "nombre3", "nombre4", ...)
+varinput.1 <- c("Mal tirador", "Tirador medio", "Buen tirador")
+varinput.2 <- c("Poco tiempo jugado", "Tiempo jugado medio", "Mucho tiempo jugado")
+names.varinput <- c(varinput.1, varinput.2)
 
 
 # Paso 5, defina los rangos de las variables de entrada y de la salida
 # --> range.data = matrix(c(minimoentrada1, maximoentrada1, minimoentrada2, maximoentrada2, 0, 100), nrow = 2)
+
+#REVISAR!!!!!!!!!!!!!!!!!! De 0 a 100 auqnue no sea maximo real
+range.data <- matrix(c(0,100, 0, 100, 0, 100), nrow=2)
 
 
 # Paso 6, defina el tipo de defuzificación, tnorma y tconorma, e implicación, así como el tipo de modelo
@@ -167,27 +170,56 @@ num.fvalinput = matrix(c(3,3), nrow=1)
 # --> type.implication.func = "MIN"
 # --> type.model <- "MAMDANI"
 
+type.defuz <- "WAM"
+type.tnorm <- "MIN"
+type.snorm <- "MAX"
+type.implication.func = "MIN"
+type.model <- "MAMDANI"
+
+name = "Sistema-difuso"
 
 # Paso 7, cree una variable "newdata" únicamente con las columnas que utilizará su sistema
 
+#REVISAR!!!!!!!!!!!!!!!!!!
+newdata = matrix(c(datos$MPG,datos$TSP), nrow = 2)
 
 # Paso 8, Cree un vector con los nombres de las variables
 # colnames.var = c("Nombreentrada1", "Nombreentrada2", "Nombresalida")
+colnames.var <- c("TSP", "MPG", "output1")
 
 
 # Paso 9, defina los nombres de las etiquetas de salida y sus funciones, de la misma manera que en los pasos 1,2,3,4
-
+num.fvaloutput <- matrix(c(5), nrow = 1)
+varoutput.1 <- c("e1", "e2", "e3","e4","e5")
+names.varoutput <- c(varoutput.1)
+#!!!!!!!!!!! TERMINAR
+varout.mf <- matrix(c(2, 0, 20, 40, NA, 4, 20, 40, 60, 80, 3, 60, 80, 100, NA),
+                    nrow = 5, byrow = FALSE)
 
 # Paso 10, Defina una matriz con las reglas, utilizando el siguiente formato (ejemplo para 1 regla)
 # --> rule = matrix( c("nombreetiqueta1", "and", "nombreetiqueta2","->", "etiquetadesalida"), nrow = 1, byrow = TRUE)
+rule = matrix( c("Mal tirador", "and", "Poco tiempo jugado","->", "e1",
+                    "Buen tirador", "and", "Poco tiempo jugado","->", "e2",
+                    "Mal tirador", "and", "Mucho tiempo jugado","->", "e3",
+                    "Tirador medio", "and", "Tiempo jugado medio","->", "e4",
+                    "Buen tirador", "and", "Mucho tiempo jugado","->", "e5"),
+                  nrow = 5, byrow = TRUE)
 
 
 # Paso 11, utilice la función frbs.gen() para crear el sistema difuso, y la función predict para ponerlo a prueba sobre los datos
 # --> sistema = frbs.gen(...)
 # --> evaluacion = predict(sistema, newdata)$predicted.val
+sistema = frbs.gen(range.data, num.fvalinput, names.varinput, 
+                   num.fvaloutput, varout.mf, names.varoutput, rule, 
+                   varinp.mf, type.model, type.defuz, type.tnorm, 
+                   type.snorm, func.tsk = NULL, colnames.var, type.implication.func, name)
+
+evaluacion = predict(sistema, newdata)$predicted.val
 
 
 # Paso 12, añada el resultado como una nueva columna y dibuje las dos variables usadas, dando color con el resultado obtenido
 # --> newdata$calidad = evaluacion
 # --> ggplot(...col=calidad...)+...
 
+newdata$calidad = evaluacion
+ggplot()
