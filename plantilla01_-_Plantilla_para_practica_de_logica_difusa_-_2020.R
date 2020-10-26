@@ -186,7 +186,7 @@ name = "Sistema-difuso"
 
 #REVISAR!!!!!!!!!!!!!!!!!!
 #newdata = matrix(c(datos$MPG,datos$TSP), nrow = 2)
-newdata = datos %>% select(TSP,MPG)
+newdata = cbind(datos$TSP, datos$MPG)
 
 # Paso 8, Cree un vector con los nombres de las variables
 # colnames.var = c("Nombreentrada1", "Nombreentrada2", "Nombresalida")
@@ -194,20 +194,32 @@ colnames.var = c("TSP", "MPG", "output1")
 
 
 # Paso 9, defina los nombres de las etiquetas de salida y sus funciones, de la misma manera que en los pasos 1,2,3,4
-num.fvaloutput = matrix(c(5), nrow = 1)
 
-varoutput.1 = c("MVP", "Buen jugador", "Mal jugador")
+#num.fvaloutput = matrix(c(5), nrow = 1)
+
+num.fvaloutput = matrix(c(3), nrow = 1)
+
+#varoutput.1 = c("MVP", "Jugador de nivel alto", "Jugador de nivel medio", "Jugador de bajo nivel", "Mal jugador")
+varoutput.1 = c("MVP", "Jugador de nivel alto", "Jugador de nivel medio")
 names.varoutput = c(varoutput.1)
-#!!!!!!!!!!! TERMINAR
-varout.mf = matrix(c(2, 0, 20, 40, NA, 4, 20, 40, 60, 80, 3, 60, 80, 100, NA),
+
+varout.mf <- matrix(c(2, 0, 20, 40, NA, 4, 20, 40, 60, 80, 3, 60, 80, 100, NA),
                     nrow = 5, byrow = FALSE)
 
 # Paso 10, Defina una matriz con las reglas, utilizando el siguiente formato (ejemplo para 1 regla)
 # --> rule = matrix( c("nombreetiqueta1", "and", "nombreetiqueta2","->", "etiquetadesalida"), nrow = 1, byrow = TRUE)
+
+#rule = matrix( c("Buen tirador", "and", "Mucho tiempo jugado","->", "MVP",
+#                    "Tirador medio", "and", "Mucho tiempo jugado","->", "Jugador de nivel alto",
+#                    "Tirador medio", "and", "Tiempo jugado medio","->", "Jugador de nivel medio",
+#                    "Tirador medio", "and", "Poco tiempo jugado","->", "Jugador de bajo nivel",
+#                   "Mal tirador", "and", "Poco tiempo jugado","->", "Mal jugador"),
+#                  nrow = 5, byrow = TRUE)
+
 rule = matrix( c("Buen tirador", "and", "Mucho tiempo jugado","->", "MVP",
-                    "Tirador medio", "and", "Mucho tiempo jugado","->", "Buen jugador",
-                    "Mal tirador", "and", "Poco tiempo jugado","->", "Mal jugador"),
-                  nrow = 3, byrow = TRUE)
+                 "Tirador medio", "and", "Mucho tiempo jugado","->", "Jugador de nivel alto",
+                 "Tirador medio", "and", "Tiempo jugado medio","->", "Jugador de nivel medio"),
+               nrow = 3, byrow = TRUE)
 
 
 # Paso 11, utilice la función frbs.gen() para crear el sistema difuso, y la función predict para ponerlo a prueba sobre los datos
