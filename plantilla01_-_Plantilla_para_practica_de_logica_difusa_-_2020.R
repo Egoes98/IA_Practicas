@@ -135,14 +135,14 @@ datos$MPG = apply(data.frame(datos$MIN, datos$GP), 1, function(x) mpg(x[1],x[2])
 # *a,b,c,d representan los puntos de una etiqueta trapezoidal
 
 #Conjuntos difusos TSP
-TSPBajo = c(2,0,47,50,NA)
-TSPMedio = c(4,50,53,57,59)
-TSPALTO = c(3,59,64,80,NA)
+TSPBajo = c(2,0,30,40,NA)
+TSPMedio = c(4,30,40,56,75)
+TSPALTO = c(3,56,75,100,NA)
 
 #Conjuntos difusos MPG
-MPGBajo = c(2,0,17,20,NA)
-MPGMedio = c(4,20,23,25,27)
-MPGAlto = c(3,27,30,40,NA)
+MPGBajo = c(2,0,10,20,NA)
+MPGMedio = c(4,10,20,25,30)
+MPGAlto = c(3,25,30,40,NA)
 
 # Paso 2, pegar todas las etiquetas por columnas y asignar a una variable
 # --> varinp.mf = cbind(etiqueta1,etiqueta2,etiqueta3...)
@@ -164,7 +164,7 @@ names.varinput <- c(varinput.1, varinput.2)
 # --> range.data = matrix(c(minimoentrada1, maximoentrada1, minimoentrada2, maximoentrada2, 0, 100), nrow = 2)
 
 #REVISAR!!!!!!!!!!!!!!!!!! De 0 a 100 auqnue no sea maximo real
-range.data <- matrix(c(0,100, 0, 100, 0, 100), nrow=2)
+range.data <- matrix(c(0,100, 0, 40, 0, 100), nrow=2)
 
 
 # Paso 6, defina el tipo de defuzificación, tnorma y tconorma, e implicación, así como el tipo de modelo
@@ -196,7 +196,7 @@ colnames.var = c("TSP", "MPG", "output1")
 # Paso 9, defina los nombres de las etiquetas de salida y sus funciones, de la misma manera que en los pasos 1,2,3,4
 num.fvaloutput = matrix(c(5), nrow = 1)
 
-varoutput.1 = c("e1", "e2", "e3","e4","e5")
+varoutput.1 = c("MVP", "Buen jugador", "Mal jugador")
 names.varoutput = c(varoutput.1)
 #!!!!!!!!!!! TERMINAR
 varout.mf = matrix(c(2, 0, 20, 40, NA, 4, 20, 40, 60, 80, 3, 60, 80, 100, NA),
@@ -204,12 +204,10 @@ varout.mf = matrix(c(2, 0, 20, 40, NA, 4, 20, 40, 60, 80, 3, 60, 80, 100, NA),
 
 # Paso 10, Defina una matriz con las reglas, utilizando el siguiente formato (ejemplo para 1 regla)
 # --> rule = matrix( c("nombreetiqueta1", "and", "nombreetiqueta2","->", "etiquetadesalida"), nrow = 1, byrow = TRUE)
-rule = matrix( c("Mal tirador", "and", "Poco tiempo jugado","->", "e1",
-                    "Buen tirador", "and", "Poco tiempo jugado","->", "e2",
-                    "Mal tirador", "and", "Mucho tiempo jugado","->", "e3",
-                    "Tirador medio", "and", "Tiempo jugado medio","->", "e4",
-                    "Buen tirador", "and", "Mucho tiempo jugado","->", "e5"),
-                  nrow = 5, byrow = TRUE)
+rule = matrix( c("Buen tirador", "and", "Mucho tiempo jugado","->", "MVP",
+                    "Tirador medio", "and", "Mucho tiempo jugado","->", "Buen jugador",
+                    "Mal tirador", "and", "Poco tiempo jugado","->", "Mal jugador"),
+                  nrow = 3, byrow = TRUE)
 
 
 # Paso 11, utilice la función frbs.gen() para crear el sistema difuso, y la función predict para ponerlo a prueba sobre los datos
