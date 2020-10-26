@@ -30,6 +30,7 @@ library(tidyverse)
 # https://www.kaggle.com/jacobbaruch/basketball-players-stats-per-season-49-leagues
 # Lea los datos en R
 datos = read.csv("datos/players_stats_by_season_full_details.csv")
+
 resultados = datos %>% select(Player,Season,weight_kg,height_cm)
 
 # Añada una columna llamada altocrisp con valores 0 o 1 (numéricos) según si la
@@ -108,6 +109,9 @@ ggplot(resultados,aes(x=height_cm,y=weight_kg,color=altoypesado))+geom_point()
 #  - Minutos jugados/partido
 #  (...)
 
+#Cambio los NA por 0 para evitar problemas en la parte 3 a la hora de hacer el sistema
+datos[is.na(datos)] = 0
+
 #True Shooting Percentage
 tsp = function(PTS,FGA,FTA){
   return ((PTS/(2*(FGA+(0.44*FTA))))*100)
@@ -181,19 +185,21 @@ name = "Sistema-difuso"
 # Paso 7, cree una variable "newdata" únicamente con las columnas que utilizará su sistema
 
 #REVISAR!!!!!!!!!!!!!!!!!!
-newdata = matrix(c(datos$MPG,datos$TSP), nrow = 2)
+#newdata = matrix(c(datos$MPG,datos$TSP), nrow = 2)
+newdata = datos %>% select(TSP,MPG)
 
 # Paso 8, Cree un vector con los nombres de las variables
 # colnames.var = c("Nombreentrada1", "Nombreentrada2", "Nombresalida")
-colnames.var <- c("TSP", "MPG", "output1")
+colnames.var = c("TSP", "MPG", "output1")
 
 
 # Paso 9, defina los nombres de las etiquetas de salida y sus funciones, de la misma manera que en los pasos 1,2,3,4
-num.fvaloutput <- matrix(c(5), nrow = 1)
-varoutput.1 <- c("e1", "e2", "e3","e4","e5")
-names.varoutput <- c(varoutput.1)
+num.fvaloutput = matrix(c(5), nrow = 1)
+
+varoutput.1 = c("e1", "e2", "e3","e4","e5")
+names.varoutput = c(varoutput.1)
 #!!!!!!!!!!! TERMINAR
-varout.mf <- matrix(c(2, 0, 20, 40, NA, 4, 20, 40, 60, 80, 3, 60, 80, 100, NA),
+varout.mf = matrix(c(2, 0, 20, 40, NA, 4, 20, 40, 60, 80, 3, 60, 80, 100, NA),
                     nrow = 5, byrow = FALSE)
 
 # Paso 10, Defina una matriz con las reglas, utilizando el siguiente formato (ejemplo para 1 regla)
@@ -213,6 +219,7 @@ sistema = frbs.gen(range.data, num.fvalinput, names.varinput,
                    num.fvaloutput, varout.mf, names.varoutput, rule, 
                    varinp.mf, type.model, type.defuz, type.tnorm, 
                    type.snorm, func.tsk = NULL, colnames.var, type.implication.func, name)
+plotMF(sistema)
 
 evaluacion = predict(sistema, newdata)$predicted.val
 
