@@ -109,15 +109,13 @@ ggplot(resultados,aes(x=height_cm,y=weight_kg,color=altoypesado))+geom_point()
 #  - Minutos jugados/partido
 #  (...)
 
-#Cambio los NA por 0 para evitar problemas en la parte 3 a la hora de hacer el sistema
-datos[is.na(datos)] = 0
-
-#True Shooting Percentage
-tsp = function(PTS,FGA,FTA){
-  return ((PTS/(2*(FGA+(0.44*FTA))))*100)
+#Field Goal Percentage
+FGP = function(FGM,FGA){
+  return ((FGM/FGA)*100)
 }
 
-datos$TSP = apply(data.frame(datos$PTS, datos$FGA, datos$FTA), 1,function(x) tsp(x[1],x[2],x[3]))
+datos$FGP = apply(data.frame(datos$FGM, datos$FGA), 1,function(x) FGP(x[1],x[2]))
+
 
 #Minutes per game
 mpg = function(MIN,GP){
@@ -135,9 +133,9 @@ datos$MPG = apply(data.frame(datos$MIN, datos$GP), 1, function(x) mpg(x[1],x[2])
 # *a,b,c,d representan los puntos de una etiqueta trapezoidal
 
 #Conjuntos difusos TSP
-TSPBajo = c(2,0,30,40,NA)
-TSPMedio = c(4,30,40,56,75)
-TSPALTO = c(3,56,75,100,NA)
+FGPBajo = c(2,0,30,40,NA)
+FGPMedio = c(4,30,40,56,75)
+FGPALTO = c(3,56,75,100,NA)
 
 #Conjuntos difusos MPG
 MPGBajo = c(2,0,10,20,NA)
@@ -162,9 +160,7 @@ names.varinput <- c(varinput.1, varinput.2)
 
 # Paso 5, defina los rangos de las variables de entrada y de la salida
 # --> range.data = matrix(c(minimoentrada1, maximoentrada1, minimoentrada2, maximoentrada2, 0, 100), nrow = 2)
-
-#REVISAR!!!!!!!!!!!!!!!!!! De 0 a 100 auqnue no sea maximo real
-range.data <- matrix(c(0,100, 0, 40, 0, 100), nrow=2)
+range.data <- matrix(c(0,100, 0, 100, 0, 100), nrow=2)
 
 
 # Paso 6, defina el tipo de defuzificación, tnorma y tconorma, e implicación, así como el tipo de modelo
@@ -184,13 +180,13 @@ name = "Sistema-difuso"
 
 # Paso 7, cree una variable "newdata" únicamente con las columnas que utilizará su sistema
 
-#REVISAR!!!!!!!!!!!!!!!!!!
 #newdata = matrix(c(datos$MPG,datos$TSP), nrow = 2)
-newdata = cbind(datos$TSP, datos$MPG)
+newdata = data.frame(datos$FGP, datos$MPG)
+newdata[is.na(newdata)] = 0
 
 # Paso 8, Cree un vector con los nombres de las variables
 # colnames.var = c("Nombreentrada1", "Nombreentrada2", "Nombresalida")
-colnames.var = c("TSP", "MPG", "output1")
+colnames.var = c("FGP", "MPG", "output1")
 
 
 # Paso 9, defina los nombres de las etiquetas de salida y sus funciones, de la misma manera que en los pasos 1,2,3,4
@@ -233,10 +229,9 @@ plotMF(sistema)
 
 evaluacion = predict(sistema, newdata)$predicted.val
 
-
 # Paso 12, añada el resultado como una nueva columna y dibuje las dos variables usadas, dando color con el resultado obtenido
 # --> newdata$calidad = evaluacion
 # --> ggplot(...col=calidad...)+...
 
 newdata$calidad = evaluacion
-ggplot()
+ggplot(newdata,aes(x=datos.FGP,y=datos.MPG,color=calidad))+geom_point()
