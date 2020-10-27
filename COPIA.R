@@ -148,19 +148,19 @@ varinp.mf = cbind(FGPBajo,FGPMedio,FGPALTO,MPGBajo,MPGMedio,MPGAlto)
 
 # Paso 3, definir una matriz con el número de etiquetas de cada entrada
 # --> num.fvalinput = matrix(c(numeroetiquetasentrada1,numeroetiquetasentrada2), nrow=1)
-num.fvalinput <- matrix(c(3, 3), nrow=1)
+num.fvalinput = matrix(c(3,3), nrow=1)
 
 
 # Paso 4, dele nombre a cada etiqueta en un vector
 # --> names.varinput = c("nombre1", "nombre2", "nombre3", "nombre4", ...)
-varinput.1 <- c("a1", "a2", "a3")
-varinput.2 <- c("b1", "b2", "b3")
+varinput.1 <- c("Mal tirador", "Tirador medio", "Buen tirador")
+varinput.2 <- c("Poco tiempo jugado", "Tiempo jugado medio", "Mucho tiempo jugado")
 names.varinput <- c(varinput.1, varinput.2)
 
 
 # Paso 5, defina los rangos de las variables de entrada y de la salida
 # --> range.data = matrix(c(minimoentrada1, maximoentrada1, minimoentrada2, maximoentrada2, 0, 100), nrow = 2)
-range.data <- matrix(c(0,100, 0, 48, 0, 100), nrow=2)
+range.data <- matrix(c(0,100, 0, 100, 0, 100), nrow=2)
 
 
 # Paso 6, defina el tipo de defuzificación, tnorma y tconorma, e implicación, así como el tipo de modelo
@@ -173,25 +173,27 @@ range.data <- matrix(c(0,100, 0, 48, 0, 100), nrow=2)
 type.defuz <- "WAM"
 type.tnorm <- "MIN"
 type.snorm <- "MAX"
-type.implication.func <- "MIN"
+type.implication.func = "MIN"
 type.model <- "MAMDANI"
 
-name <- "Sim-0"
+name = "Sistema-difuso"
 
 # Paso 7, cree una variable "newdata" únicamente con las columnas que utilizará su sistema
+
+#newdata = matrix(c(datos$MPG,datos$TSP), nrow = 2)
 newdata = data.frame(datos$FGP, datos$MPG)
 newdata[is.na(newdata)] = 0
 
 # Paso 8, Cree un vector con los nombres de las variables
 # colnames.var = c("Nombreentrada1", "Nombreentrada2", "Nombresalida")
-colnames.var <- c("input1", "input2", "output1")
+colnames.var = c("FGP", "MPG", "Calidad")
 
 
 # Paso 9, defina los nombres de las etiquetas de salida y sus funciones, de la misma manera que en los pasos 1,2,3,4
-num.fvaloutput <- matrix(c(3), nrow = 1)
+num.fvaloutput = matrix(c(3), nrow = 1)
 
-varoutput.1 <- c("e1", "e2", "e3")
-names.varoutput <- c(varoutput.1)
+varoutput.1 = c("Jugador de nivel alto", "Jugador de nivel medio", "Jugador de bajo nivel")
+names.varoutput = c(varoutput.1)
 
 varout.mf <- matrix(c(2, 0, 20, 40, NA, 4, 20, 40, 60, 80, 3, 60, 80, 100, NA),
                     nrow = 5, byrow = FALSE)
@@ -199,24 +201,26 @@ varout.mf <- matrix(c(2, 0, 20, 40, NA, 4, 20, 40, 60, 80, 3, 60, 80, 100, NA),
 # Paso 10, Defina una matriz con las reglas, utilizando el siguiente formato (ejemplo para 1 regla)
 # --> rule = matrix( c("nombreetiqueta1", "and", "nombreetiqueta2","->", "etiquetadesalida"), nrow = 1, byrow = TRUE)
 
-rule <- matrix(c("a1", "and", "b1", "->", "e1",
-                 "a2", "and", "b2", "->", "e2", 
-                 "a3", "and", "b2", "->", "e3"), 
-               nrow = 3, byrow = TRUE)  
+rule = matrix( c("Buen tirador", "and", "Mucho tiempo jugado","->", "Jugador de nivel alto",
+                 "Tirador medio", "and", "Mucho tiempo jugado","->", "Jugador de nivel medio",
+                 "Mal tirador", "and", "Poco tiempo jugado","->", "Jugador de bajo nivel"),
+               nrow = 3, byrow = TRUE)
 
 
 # Paso 11, utilice la función frbs.gen() para crear el sistema difuso, y la función predict para ponerlo a prueba sobre los datos
 # --> sistema = frbs.gen(...)
 # --> evaluacion = predict(sistema, newdata)$predicted.val
-object <- frbs.gen(range.data, num.fvalinput, names.varinput, 
+sistema = frbs.gen(range.data, num.fvalinput, names.varinput, 
                    num.fvaloutput, varout.mf, names.varoutput, rule, 
                    varinp.mf, type.model, type.defuz, type.tnorm, 
                    type.snorm, func.tsk = NULL, colnames.var, type.implication.func, name)
-plotMF(object)
-res <- predict(object, newdata)$predicted.val
+plotMF(sistema)
+
+evaluacion = predict(sistema, newdata)$predicted.val
+
 # Paso 12, añada el resultado como una nueva columna y dibuje las dos variables usadas, dando color con el resultado obtenido
 # --> newdata$calidad = evaluacion
 # --> ggplot(...col=calidad...)+...
 
-newdata$calidad = res
+newdata$calidad = evaluacion
 ggplot(newdata,aes(x=datos.FGP,y=datos.MPG,color=calidad))+geom_point()
