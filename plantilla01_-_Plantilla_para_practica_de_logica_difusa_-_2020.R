@@ -109,20 +109,27 @@ ggplot(resultados,aes(x=height_cm,y=weight_kg,color=altoypesado))+geom_point()
 #  - Minutos jugados/partido
 #  (...)
 
-#Field Goal Percentage
-FGP = function(FGM,FGA){
+#Field Goal Percentage: FGP
+fgp = function(FGM,FGA){
   return ((FGM/FGA)*100)
 }
 
-datos$FGP = apply(data.frame(datos$FGM, datos$FGA), 1,function(x) FGP(x[1],x[2]))
+datos$FGP = apply(data.frame(datos$FGM, datos$FGA), 1,function(x) fgp(x[1],x[2]))
 
 
-#Minutes per game
+#Minutes per game: MPG
 mpg = function(MIN,GP){
   return (MIN/GP)
 }
 
 datos$MPG = apply(data.frame(datos$MIN, datos$GP), 1, function(x) mpg(x[1],x[2]))
+
+#Points per game: PPG
+ppg = function(PTS,GP){
+  return (PTS/GP)
+}
+
+datos$PPG = apply(data.frame(datos$PTS, datos$GP), 1, function(x) ppg(x[1],x[2]))
 
 # Paso 1, definir todos los conjuntos difusos a usar como vectores de 5 elementos
 # --> etiqueta1 = c(valor,xxx, xxx, xxx, xxx)
@@ -134,13 +141,13 @@ datos$MPG = apply(data.frame(datos$MIN, datos$GP), 1, function(x) mpg(x[1],x[2])
 
 #Conjuntos difusos TSP
 FGPBajo = c(2,0,30,40,NA)
-FGPMedio = c(4,30,40,56,75)
-FGPALTO = c(3,56,75,100,NA)
+FGPMedio = c(4,30,40,56,60)
+FGPALTO = c(3,56,60,100,NA)
 
 #Conjuntos difusos MPG
 MPGBajo = c(2,0,10,20,NA)
-MPGMedio = c(4,10,20,25,30)
-MPGAlto = c(3,25,30,40,NA)
+MPGMedio = c(4,10,20,30,35)
+MPGAlto = c(3,30,35,40,NA)
 
 # Paso 2, pegar todas las etiquetas por columnas y asignar a una variable
 # --> varinp.mf = cbind(etiqueta1,etiqueta2,etiqueta3...)
@@ -148,19 +155,19 @@ varinp.mf = cbind(FGPBajo,FGPMedio,FGPALTO,MPGBajo,MPGMedio,MPGAlto)
 
 # Paso 3, definir una matriz con el número de etiquetas de cada entrada
 # --> num.fvalinput = matrix(c(numeroetiquetasentrada1,numeroetiquetasentrada2), nrow=1)
-num.fvalinput <- matrix(c(3, 3), nrow=1)
+num.fvalinput = matrix(c(3, 3), nrow=1)
 
 
 # Paso 4, dele nombre a cada etiqueta en un vector
 # --> names.varinput = c("nombre1", "nombre2", "nombre3", "nombre4", ...)
-varinput.1 <- c("a1", "a2", "a3")
-varinput.2 <- c("b1", "b2", "b3")
-names.varinput <- c(varinput.1, varinput.2)
+varinput.1 = c("Buen_tirador", "Tirador_medio", "Mal_tirador")
+varinput.2 = c("Mucho_tiempo_jugado", "Tiempo_jugado_medio", "Poco_tiempo_jugado")
+names.varinput = c(varinput.1, varinput.2)
 
 
 # Paso 5, defina los rangos de las variables de entrada y de la salida
 # --> range.data = matrix(c(minimoentrada1, maximoentrada1, minimoentrada2, maximoentrada2, 0, 100), nrow = 2)
-range.data <- matrix(c(0,100, 0, 48, 0, 100), nrow=2)
+range.data = matrix(c(0,100, 0, 48, 0, 100), nrow=2)
 
 
 # Paso 6, defina el tipo de defuzificación, tnorma y tconorma, e implicación, así como el tipo de modelo
@@ -170,13 +177,13 @@ range.data <- matrix(c(0,100, 0, 48, 0, 100), nrow=2)
 # --> type.implication.func = "MIN"
 # --> type.model <- "MAMDANI"
 
-type.defuz <- "WAM"
-type.tnorm <- "MIN"
-type.snorm <- "MAX"
-type.implication.func <- "MIN"
-type.model <- "MAMDANI"
+type.defuz = "WAM"
+type.tnorm = "MIN"
+type.snorm = "MAX"
+type.implication.func = "MIN"
+type.model = "MAMDANI"
 
-name <- "Sim-0"
+name = "Sim-0"
 
 # Paso 7, cree una variable "newdata" únicamente con las columnas que utilizará su sistema
 newdata = data.frame(datos$FGP, datos$MPG)
@@ -184,39 +191,45 @@ newdata[is.na(newdata)] = 0
 
 # Paso 8, Cree un vector con los nombres de las variables
 # colnames.var = c("Nombreentrada1", "Nombreentrada2", "Nombresalida")
-colnames.var <- c("input1", "input2", "output1")
+colnames.var = c("FGP", "MPG", "Calidad")
 
 
 # Paso 9, defina los nombres de las etiquetas de salida y sus funciones, de la misma manera que en los pasos 1,2,3,4
-num.fvaloutput <- matrix(c(3), nrow = 1)
+num.fvaloutput = matrix(c(3), nrow = 1)
 
-varoutput.1 <- c("e1", "e2", "e3")
+varoutput.1 = c("Jugador_de_nivel_alto", "Jugador_de_nivel_medio", "Jugador_de_nivel_bajo")
 names.varoutput <- c(varoutput.1)
 
-varout.mf <- matrix(c(2, 0, 20, 40, NA, 4, 20, 40, 60, 80, 3, 60, 80, 100, NA),
+varout.mf = matrix(c(2, 0, 20, 40, NA, 4, 20, 40, 60, 80, 3, 60, 80, 100, NA),
                     nrow = 5, byrow = FALSE)
 
 # Paso 10, Defina una matriz con las reglas, utilizando el siguiente formato (ejemplo para 1 regla)
 # --> rule = matrix( c("nombreetiqueta1", "and", "nombreetiqueta2","->", "etiquetadesalida"), nrow = 1, byrow = TRUE)
 
-rule <- matrix(c("a1", "and", "b1", "->", "e1",
-                 "a2", "and", "b2", "->", "e2", 
-                 "a3", "and", "b2", "->", "e3"), 
-               nrow = 3, byrow = TRUE)  
+rule = matrix(c("Buen_tirador", "and", "Mucho_tiempo_jugado", "->", "Jugador_de_nivel_alto",
+                "Tirador_medio", "and", "Tiempo_jugado_medio", "->", "Jugador_de_nivel_medio", 
+                "Mal_tirador", "and", "Poco_tiempo_jugado", "->", "Jugador_de_nivel_bajo",
+                "Tirador_medio", "and", "Mucho_tiempo_jugado", "->", "Jugador_de_nivel_medio",
+                "Buen_tirador", "and", "Tiempo_jugado_medio", "->", "Jugador_de_nivel_alto"), 
+               nrow = 5, byrow = TRUE)  
 
 
 # Paso 11, utilice la función frbs.gen() para crear el sistema difuso, y la función predict para ponerlo a prueba sobre los datos
 # --> sistema = frbs.gen(...)
 # --> evaluacion = predict(sistema, newdata)$predicted.val
-object <- frbs.gen(range.data, num.fvalinput, names.varinput, 
+sistema = frbs.gen(range.data, num.fvalinput, names.varinput, 
                    num.fvaloutput, varout.mf, names.varoutput, rule, 
                    varinp.mf, type.model, type.defuz, type.tnorm, 
                    type.snorm, func.tsk = NULL, colnames.var, type.implication.func, name)
-plotMF(object)
-res <- predict(object, newdata)$predicted.val
+#Graficos del sistema
+plotMF(sistema)
+
+#Evalucaion de los jugadores
+evaluacion = predict(sistema, newdata)$predicted.val
+
 # Paso 12, añada el resultado como una nueva columna y dibuje las dos variables usadas, dando color con el resultado obtenido
 # --> newdata$calidad = evaluacion
 # --> ggplot(...col=calidad...)+...
 
-newdata$calidad = res
+newdata$calidad = evaluacion
 ggplot(newdata,aes(x=datos.FGP,y=datos.MPG,color=calidad))+geom_point()
