@@ -31,13 +31,59 @@ ggplot(puntos, aes(x = V1, y = V2)) + geom_point() +
 # Paso 1: Crear una matriz llamada distancias, de longxlong elementos. En cada 
 # posición debe almacenar la distancia entre 2 ciudades
 # distancias[i,j] <- distancia euclídea entre puntos[i,] y puntos[j,]
-
-
+distancias = matrix(nrow = 29,ncol = 29)
+for(i in 1:long){
+  for(j in 1:long){
+    distancias[i,j] = sqrt(((puntos[j,1]-puntos[i,1])^2)+((puntos[j,2]-puntos[i,2])^2))
+  }
+}
 
 # Paso 2: Defina la función fitness, que reciba un individuo y la matriz de distancias
 # y devuelva la longitud total de los dos caminos recorridos
 # --> fitness = function(ind,distancias){...}
+fitness = function(ind,distancias){
+  ruta1 = 0
+  ruta2 = 0
+  
+  zero = FALSE
+  ruta2Existe = FALSE
+  
+  primeroR1 = ind[1]
+  primeroR2 = 0
 
+  if(length(ind)==1 || ind[2] == 0 || ind[length(ind)-1] == 0){
+    return(Inf)
+  }
+
+  for(i in 2:length(ind)){
+    if(zero){
+      if(ind[i-1] != 0){
+        ruta2Existe = true
+        ruta2 = ruta2 + distancias[ind[i],ind[i-1]]
+      }else{
+        primeroR2 = ind[i]
+      }
+    }else{
+      if(ind[i] == 0){
+        ruta1 = ruta1 + distancias[primeroR1,ind[i-1]]
+        zero = TRUE
+      }else{
+        ruta1 = ruta1 + distancias[ind[i],ind[i-1]]
+      }
+    }
+  }
+  
+  if(ruta2Existe){
+    ruta2 = ruta2 + distancias[primeroR2,ind[length(ind)]]
+  }
+  
+  ruta1+ruta2
+}
+
+#TODO BORRAR ESTO SOLO PARA PRUEBAS
+individuo = c(21,1,0,3)
+distancia = fitness(individuo,distancias)
+distancia
 
 
 # Paso 3: Defina la función de inicialización, que reciba el número de individuos a crear
@@ -45,8 +91,15 @@ ggplot(puntos, aes(x = V1, y = V2)) + geom_point() +
 # filas como individuos y "long" columnas.
 # En cada fila, habrá una permutación (aleatoria) de los valores entre 1 y long
 # --> initial = function(number,long){...}
+initial = function(number, long){
+  individuos = matrix(nrow = number, ncol = long+1)
+  for(i in 1:number){
+    individuos [i,] = append(sample(1:29,29,replace = TRUE),0,after = sample(1:29,1))
+  }
+  individuos
+}
 
-
+matriz = initial(4,long)
 
 # Paso 4: Puede utilizar la función de torneo binario vista en clase
 tournamentselection = function(evaluation,number){
@@ -57,8 +110,6 @@ tournamentselection = function(evaluation,number){
   } 
   return(indexes)
 }
-
-
 
 # Paso 5: Operador de cruce de orden
 # Implemente una función que recibe los índices de padres, la población y la probabilidad de cruce
@@ -75,14 +126,9 @@ tournamentselection = function(evaluation,number){
 # -->     return(offspring)
 # -->   }
 
-
-
-
 # Paso 6: Operador de Mutación
 # Para cada hijo, con probabilidad pmut, intercambiar dos posiciones elegidas aleatoriamente
 # -->   mutation = function(population,pmut){...}
-
-
 
 # Paso 7: Realize hasta 5 pruebas con diferentes configuraciones de los siguientes parámetros
 # analice y comente los resultados a modo de comentarios:
