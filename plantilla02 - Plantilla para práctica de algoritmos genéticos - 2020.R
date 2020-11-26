@@ -163,14 +163,103 @@ mutation = function(population,pmut){
 # analice y comente los resultados a modo de comentarios:
 #---------------------------------------------------------------------------
 # Prueba1: 
-# Parámetros--> ...
-# Resultados--> ...
-# Justificación/Razonamiento--> ...
+# Parámetros--> 
+  generations = 1000
+  tournamentsize = 2
+  probcrossover = 0.9
+  probmutation  = 0.05
+  popsize=100
+# Resultados-->
+# Mejor Individuo
+# 24 27  8 21 28  1 10 20 17 22 14 18 15 11 25  0 16 23  7 19  4  6 12  5 26  9 29  3  2 13
+# El Fitness
+# 10860.5357747789
+# Justificación/Razonamiento--> Siendo el primer intennto no tenemos mucho con lo que comparar los resultados todavia, pero podemos 
+# suponer que al subir las generaciones seremos capaces de bajar el fitness y encontrar un mejor individuo.
 #---------------------------------------------------------------------------
-generations = 1000
+# Prueba2: 
+# Parámetros--> 
+  generations = 10000
+  tournamentsize = 2
+  probcrossover = 0.9
+  probmutation  = 0.05
+  popsize=100
+# Resultados-->
+# Mejor Individuo
+# 5  9 12  6 28  1 24  8 27 23 16 15 14 17 18  0 26 29  3  2 20 10 19 25  7 11 22  4 13 21
+# El Fitness
+# 9826.99190541909
+# Justificación/Razonamiento--> Parece que con mas generaciones de ejecucion hemos conseguido bajar la fitness, al tener mas jecucion y hacer mas
+# mas mutaciones ha conseguido encontrar un mejor resultado. He runeado 3 veces estos parametros y es cierto que ha habia resultado bastante perores por lo que parece ser que
+# la poblacion random que se genera puede resultar clavee para encontrar un resultado bueno con menos generaciones.  
+#---------------------------------------------------------------------------
+# Prueba3: 
+# Parámetros--> 
+  generations = 10000
+  tournamentsize = 2
+  probcrossover = 0.9
+  probmutation  = 0.05
+  popsize=1000
+# Resultados-->
+# Mejor Individuo
+# 5  9 12  6 28  1 24  8 27 23 16 15 14 17 18  0 26 29  3  2 20 10 19 25  7 11 22  4 13 21
+# El Fitness
+# 11209.1031865794
+# Justificación/Razonamiento--> Al final el resultado con mucha mas poblacion ha sido muy malo en comparacion, ademas de que ha tardado
+# mucho en ejecutarse. No merece la pena poner una poblacion muy amplia ya que por lo menos en mi caso no ha dado resultados mejores y
+# ha supuesto un decremento de rendimiento muy notable.
+#---------------------------------------------------------------------------
+# Prueba4: 
+# Parámetros--> 
+  generations = 100000
+  tournamentsize = 2
+  probcrossover = 0.9
+  probmutation  = 0.05
+  popsize=1000
+# Resultados-->
+# Mejor Individuo
+# 27 24  1 21 13  4 15 18 14 17 22 11 19 16  0  5  2 20 10 25  7 23  8 28  6 12  9 26  3 29
+# El Fitness
+# 8184.9387315255
+# Justificación/Razonamiento--> En este caso he subido de 10.000 a 100.000 las generaciones y se ha notado que ha disminuido el fitness.
+# Me hace llegar a la conclusion de que lo importante es ejecutar muchas generaciones para bajar la fitness y conseguir mejor resultado, eso si llegara un momento en en el que al
+# algoritmo le cueste mas bajar dependiendo de lo bien programado que este.
+#---------------------------------------------------------------------------
+# Prueba5: 
+# Parámetros--> 
+  generations = 10000
+  tournamentsize = 2
+  probcrossover = 1
+  probmutation  = 0.5
+  popsize=100
+# Resultados-->
+# Mejor Individuo
+# 21  6 12  9  5 26  3 29  2 13 27 23  7 19 20  0  4 18 17 22 14 15 11 25 16 24  8 28  1 10
+# El Fitness
+# 9243.67886393601
+# Justificación/Razonamiento--> En este caso he subido decidido hacer que siempre haga el crossover y he subido mucho la probabilidad de mutacion,
+# lo que con los mismos datos que la prueba dos a dado muy buenos resultados. Ha mejorado el fitness. Al aumentar estas probabilidades
+# se producen mas cambios por generacion lo que hasta cierto punto da la posibilidad de encontrar mejores resultados mas rapido.  
+#---------------------------------------------------------------------------
+# Prueba6: 
+# Parámetros--> 
+  generations = 100000
+  tournamentsize = 2
+  probcrossover = 1
+  probmutation  = 0.5
+  popsize=100
+# Resultados-->
+# Mejor Individuo
+# 14 17 22 11 19 25  7 23 24  1 21 10  4 15 18  0  5  9 12  6 28  8 27 16 13 20  2 29  3 26
+# El Fitness
+# 7775.74911622389
+# Justificación/Razonamiento--> Con los mismos cambios que en el anterior pero con un mayor numero de generaciones conseguimos mejorar aun mas los resultados.
+# Esta prueba era para ver como recacionaba lo de aumentar probabilidades a un mayor numero de generaciones. 
+#---------------------------------------------------------------------------
+generations = 100000
 tournamentsize = 2
-probcrossover = 0.9
-probmutation  = 0.05
+probcrossover = 1
+probmutation  = 0.5
 popsize=100
 
 
