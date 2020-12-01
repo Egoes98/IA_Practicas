@@ -1,9 +1,9 @@
-# Nombre: 
-# Entrega:
-# Fecha:
+# Nombre: Egoitz Aranzabal Calvo
+# Entrega: 3
+# Fecha: 26/11/2020
 ##---------------------------------------------------------------------------
-# Tiempo dedicado a la entrega:
-# Dificultades encontradas y manera de resolverlas:
+# Tiempo dedicado a la entrega: 10horas
+# Dificultades encontradas y manera de resolverlas: A la hora de entender como hacer la implementacion de lagoritmo y sobre todo para realizar algunas de las funciones no conocer r bien hizo que me costara saber como hacer ciertas cosas. Lo solucione buscando por internet y documentadome.
 ##---------------------------------------------------------------------------
 # 1. Asegúrese de incluir, junto a esta plantilla, cualquier fichero necesario
 #    para su ejecución, incluidos datasets
