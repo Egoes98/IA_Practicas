@@ -75,10 +75,8 @@ table(prediccion2)
 
 # Paso 8: Calcule el porcentaje de aciertos de cada uno de los modelos. ¿Cuál es mejor? Razone por qué
 # *Nota: puede utilizar, si le es más cómodo el comando confusionMatrix, de la librería "caret"
-
-
-
-
+aciertosModelo1 = confusionMatrix(prediccion1, datostst$imdb_score)
+aciertosModelo2 = confusionMatrix(prediccion2, datostst$imdb_score)
 
 #---------------------------------------------------------------------------
 ######################## Parte 2 ###########################################
@@ -100,7 +98,6 @@ datos$imdb_score = discretize(datos$imdb_score, "fixed", breaks = c(0,7.5,9,10))
 index = match("imdb_score", names(datos))
 datosnor = datos[,-index]
 
-#!!!!!!!! REVISAR NO SE QUE TIPO DE NORMALIZACION NI SI ES COLUMNA O ROW
 datosnor = data.Normalization(datosnor,"n8","column")
 datosnor$imdb_score = datos$imdb_score;
 
