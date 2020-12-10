@@ -15,11 +15,10 @@
 rm(list = ls());cat("\014")
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 getwd()
-# (incluya aquí cualquier librería a utilizar)
-install.packages("caret", dependencies = TRUE)
-install.packages("manipulateWidget", dependencies = TRUE)
-install.packages("R2HTML")
 
+install.packages("arules", dependencies = TRUE)
+
+# (incluya aquí cualquier librería a utilizar)
 library(dplyr)
 library(lattice)
 library(ggplot2)
@@ -27,6 +26,7 @@ library(caret)
 library(e1071)
 library(clusterSim)
 library(class)
+library(arules)
 #---------------------------------------------------------------------------
 
 
@@ -78,6 +78,9 @@ table(prediccion2)
 aciertosModelo1 = confusionMatrix(prediccion1, datostst$imdb_score)
 aciertosModelo2 = confusionMatrix(prediccion2, datostst$imdb_score)
 
+aciertosModelo1
+aciertosModelo2
+
 #---------------------------------------------------------------------------
 ######################## Parte 2 ###########################################
 #---------------------------------------------------------------------------
@@ -109,24 +112,24 @@ datosnor$imdb_score = datos$imdb_score;
 trainIndex = createDataPartition(datos$duration, times = 1, p = 0.8, list = FALSE)
 
 datostra = datos[trainIndex,]
-labeltra = matrix(datostra$imdb_score)
+labeltra = datostra$imdb_score
 index = match("imdb_score", names(datostra))
 datostra = datostra[,-index]
 
 datostst = datos[-trainIndex,]
-labeltst = matrix(datostst$imdb_score)
+labeltst = datostst$imdb_score
 index = match("imdb_score", names(datostst))
 datostst = datostst[,-index]
 
 trainIndex = createDataPartition(datosnor$duration, times = 1, p = 0.8, list = FALSE)
 
 datostranor = datosnor[trainIndex,]
-labeltranor = matrix(datostranor$imdb_score)
+labeltranor = datostranor$imdb_score
 index = match("imdb_score", names(datostranor))
 datostranor = datostranor[,-index]
 
 datoststnor = datosnor[-trainIndex,]
-labeltstnor = matrix(datoststnor$imdb_score)
+labeltstnor = datoststnor$imdb_score
 index = match("imdb_score", names(datoststnor))
 datoststnor = datoststnor[,-index]
 
@@ -152,6 +155,19 @@ table(prediccion6)
 
 # Paso 5: Calcule el porcentaje de aciertos de cada uno de los 6 modelos. ¿Cuál es mejor? Razone por qué
 # *Nota: puede utilizar, si le es más cómodo el comando confusionMatrix, de la librería "caret"
+aciertosModelo1 = confusionMatrix(prediccion1, labeltst)
+aciertosModelo2 = confusionMatrix(prediccion2, labeltst)
+aciertosModelo3 = confusionMatrix(prediccion3, labeltst)
 
+aciertosModelo1
+aciertosModelo2
+aciertosModelo3
 
+aciertosModelo4 = confusionMatrix(prediccion4, labeltstnor)
+aciertosModelo5 = confusionMatrix(prediccion5, labeltstnor)
+aciertosModelo6 = confusionMatrix(prediccion6, labeltstnor)
+
+aciertosModelo4
+aciertosModelo5
+aciertosModelo6
 
