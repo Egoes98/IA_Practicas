@@ -1,9 +1,10 @@
 # Nombre: Egoitz Aranzabal Calvo
 # Entrega: 4
-# Fecha:
+# Fecha:10/12/2020
 ##---------------------------------------------------------------------------
-# Tiempo dedicado a la entrega:
-# Dificultades encontradas y manera de resolverlas:
+# Tiempo dedicado a la entrega: 5
+# Dificultades encontradas y manera de resolverlas: A la hora de cargar las librerias. Lo he solucionado instalandolas a mano.
+#Me dejo de funcionar una libreria de un dia pra otro y se arreglo actualizando R. En cuanto a la practica ningun problema.
 ##---------------------------------------------------------------------------
 # 1. Asegúrese de incluir, junto a esta plantilla, cualquier fichero necesario
 #    para su ejecución, incluidos datasets
@@ -15,8 +16,6 @@
 rm(list = ls());cat("\014")
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 getwd()
-
-install.packages("arules", dependencies = TRUE)
 
 # (incluya aquí cualquier librería a utilizar)
 library(dplyr)
@@ -80,6 +79,14 @@ aciertosModelo2 = confusionMatrix(prediccion2, datostst$imdb_score)
 
 aciertosModelo1
 aciertosModelo2
+
+#Razonamiento
+#Modelo 1
+#Accuracy: 0.8472
+
+#Modelo 2
+#Accuracy: 0.8182
+
 
 #---------------------------------------------------------------------------
 ######################## Parte 2 ###########################################
@@ -171,3 +178,23 @@ aciertosModelo4
 aciertosModelo5
 aciertosModelo6
 
+#Razonamiento
+#No normalizado
+#Modelo1
+#Accuracy: 0.8353
+
+#Modelo2
+#Accuracy: 0.7576
+
+#Modelo3
+#Accuracy: 0.8155
+
+#Normalizados
+#Modelo4
+#Accuracy: 0.8748
+
+#Modelo5
+#Accuracy: 0.834
+
+#Modelo6
+#Accuracy: 0.8682
