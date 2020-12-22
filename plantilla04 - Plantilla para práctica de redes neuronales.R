@@ -29,7 +29,7 @@ library(tictoc)
 datos = read.csv("datos/hormigon.csv")
 
 # Paso 2: Normalice todas las columnas del dataset (como en la práctica anterior)
-datos = data.Normalization(datos,"n8","column")
+datos = data.Normalization(datos,"n4","column")
 
 # Paso 3: Utilice la función createDataPartition (paquete: caret) para dividir los datos en
 # training (80%) y test (20%)
